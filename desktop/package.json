@@ -10,7 +10,8 @@
     "start": "electron .",
     "test": "node tests/model.test.mjs && node tests/storage.test.cjs",
     "test:desktop": "node tests/desktop.test.mjs",
-    "package:mac": "node scripts/package-mac.mjs"
+    "package:mac": "node scripts/package-mac.mjs",
+    "capture:previews": "node scripts/capture-previews.mjs"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",

@@ -6,11 +6,13 @@ Target: Apple silicon, macOS 13+.
 
 ## App bundle
 
-The release archive is desktop/release/Focus-Studio-0.2.0-mac-arm64.zip. It contains Focus Studio.app. Extract it, move the app to Applications, and open it through Finder.
+Packaging generates desktop/release/Focus-Studio-0.2.0-mac-arm64.zip; generated archives are excluded from this repository. It contains Focus Studio.app. If you have the archive, extract it, move the app to Applications, and open it through Finder. Once installed, the app works independently of Terminal, a browser, and Codex.
 
 This cloud-built preview is not Developer ID signed or notarized. Gatekeeper may block launch. Use macOS's app-specific Open Anyway option only if it is offered and you trust this build. Do not disable Gatekeeper globally.
 
 If the downloaded preview cannot launch, use the source on your Mac: install Node 24+, run npm ci and npm start in desktop/, or run npm run package:mac to produce a local ad-hoc-signed build. macOS packaging/signing has not been run in this Linux environment. Developer ID signing and notarization need a Mac and the app owner's Apple developer credentials.
+
+See the [illustrated walkthrough](user-guide.md) and [screenshot gallery](preview.md) for examples of the interface.
 
 ## Daily workflow
 

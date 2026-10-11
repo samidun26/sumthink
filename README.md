@@ -1,8 +1,22 @@
+<p align="center">
+  <img src="desktop/assets/app.png" width="112" height="112" alt="Focus Studio logo: a sun, checkmark, and layered green mountains">
+</p>
+
 # Focus Studio for macOS
 
 A standalone, offline desktop workspace for a busy day: tasks, projects, priorities, due dates, subtasks, and immersive focus sessions.
 
 Version 0.2.0 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
+
+## Preview
+
+![Today view with project tasks, priorities, subtasks, and daily workload](docs/screenshots/today.png)
+
+| Focus on one task | Step into immersive view |
+| --- | --- |
+| ![Linked task and focus timer](docs/screenshots/focus-session.png) | ![Full-window immersive landscape and focus timer](docs/screenshots/immersive.png) |
+
+These are actual desktop UI captures with sample work, taken in Electron on Linux. Mac system controls still need device validation. See the [full screenshot gallery](docs/preview.md) and [illustrated how-to guide](docs/user-guide.md).
 
 ## Get started
 
@@ -10,7 +24,7 @@ This repository contains source code and documentation. Build the app on your Ma
 
 1. Extract Focus-Studio-0.2.0-mac-arm64.zip.
 2. Move Focus Studio.app to Applications and open it.
-3. Add your work with Command N, assign projects, and choose a manageable Today plan.
+3. Add your work with Command N, assign projects, and choose a manageable Today plan. Follow the [illustrated guide](docs/user-guide.md).
 4. Use Focus on a task to begin a session. Finish with a reflection and optionally complete the task.
 
 The bundle produced in this Linux workspace is a preview without Developer ID signing or Apple notarization. macOS may block it. See [the Mac installation guide](docs/macos-app.md) for the supported local-build alternative and validation limits.
@@ -54,6 +68,10 @@ npm run test:desktop
 The real desktop test requires a graphical session. It was run on Linux with Xvfb and a Linux Electron runtime; it does not verify macOS-specific menu bar, Dock, notifications, Gatekeeper, or VoiceOver behavior.
 
 See [documentation](docs/README.md), [the macOS guide](docs/macos-app.md), and [validation](docs/validation.md).
+
+## Refresh documentation screenshots
+
+After installing desktop dependencies, run `npm run capture:previews` from desktop/ in a graphical session. It captures the app using an isolated temporary profile and removes the sample data afterward. Linux environments need a display, for example `DISPLAY=:99 npm run capture:previews` with Xvfb running. See [capture notes](docs/preview.md#refresh-the-captures).
 
 ## Earlier web prototype
 

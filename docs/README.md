@@ -2,7 +2,7 @@
 
 This documentation is part of development, not a separate task at the end. Update the relevant documents in the same change as the behavior they describe. Record outcomes and evidence, not only intentions.
 
-Current product: the standalone Apple silicon macOS app. Start with [the macOS installation and usage guide](macos-app.md). The earlier browser prototype is documented as history.
+Current product: the standalone Apple silicon macOS app. Start with the [illustrated how-to guide](user-guide.md), [preview gallery](preview.md), or [macOS installation guide](macos-app.md). The earlier browser prototype is documented as history.
 
 | Document | Purpose | Update trigger |
 | --- | --- | --- |
@@ -13,7 +13,8 @@ Current product: the standalone Apple silicon macOS app. Start with [the macOS i
 | [Validation](validation.md) | Acceptance scenarios and actual verification results | Behavior changes or a check runs |
 | [Development log](development-log.md) | Dated progress, findings, and next steps | Meaningful development session |
 | [Decision records](decisions/README.md) | Decisions and reasons | A consequential tradeoff is resolved |
-| [User guide](user-guide.md) | How to use the delivered experience and keep its data | User-visible behavior changes |
+| [User guide](user-guide.md) | Illustrated daily workflow, shortcuts, and backups | User-visible behavior changes |
+| [Preview gallery](preview.md) | Logo, screenshots, and reproducible capture instructions | Visual or workflow changes |
 | [Deployment](deployment.md) | Source and desktop packaging procedure | Hosting or release workflow changes |
 | [macOS app](macos-app.md) | Installation, native controls, task workflow, backup, and platform limits | Desktop behavior or release changes |
 

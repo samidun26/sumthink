@@ -1,5 +1,9 @@
 # Development log
 
+## 11 October 2026 — Visual documentation
+
+Added the existing app logo and interface previews to the README, a screenshot gallery, and an illustrated usage guide covering task capture, daily planning, focus, immersive view, reflection, ideas, and backups. Added a repeatable Electron capture command with a temporary sample profile. Eight desktop UI captures were produced on Linux/Xvfb without JavaScript errors; the capture profile was removed afterward. These images do not establish macOS-specific runtime behavior.
+
 ## 11 October 2026 — GitHub source handoff
 
 Prepared source, tests, assets, and documentation for samidun26/sumthink at the owner’s request. Excluded installed dependencies, generated releases, local environment files, and hosting metadata. Clarified the source-build path in the README; the original hosted prototype remains unchanged. No CI workflows or paid services were added.

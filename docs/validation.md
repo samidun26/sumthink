@@ -1,5 +1,11 @@
 # Validation
 
+## Visual documentation — 11 October 2026
+
+`DISPLAY=:99 npm run capture:previews` ran the real Electron app on Linux/Xvfb and captured eight UI states with sample tasks and ideas: Today, task editor, linked focus, immersive view, reflection, idea inbox, journal, and preferences. No JavaScript errors were reported. The isolated temporary profile was removed after capture. Images are documentation examples, not user data or evidence of macOS system behavior. The short saved session records actual elapsed demo time.
+
+The README embeds the existing app logo and current previews. The illustrated user guide and preview gallery use repository-relative image paths for GitHub rendering. Markdown/image targets and PNG integrity were checked before upload.
+
 ## Desktop version 0.2.0 — 11 October 2026 (Asia/Jakarta)
 
 | Check | Result | Evidence and limit |
