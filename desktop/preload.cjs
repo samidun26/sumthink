@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld('focusDesktop', Object.freeze({
   importState: () => ipcRenderer.invoke('studio:import'),
   timerStatus: status => ipcRenderer.send('studio:timer', status),
   pendingTasks: count => ipcRenderer.send('studio:pending-tasks', count),
+  widgetFeedback: value => ipcRenderer.send('studio:widget-feedback', value),
+  openCompanion: () => ipcRenderer.send('studio:companion'),
   onCommand: callback => { ipcRenderer.on('studio:command', (_event, command) => callback(command)); },
 }));

@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; object-src 'none'"><title>Focus Studio · Floating widgets</title><link rel="stylesheet" href="widget.css"><script type="module" src="widget.mjs"></script></head>
+<body>
+  <header><span class="wordmark">✳ focus<span>studio</span></span><div class="window-actions"><button id="widget-pin" aria-pressed="true" aria-label="Keep above other windows">Pin</button><button id="widget-close" aria-label="Close floating widgets">×</button></div></header>
+  <main>
+    <section class="today-card"><div class="heading"><span>TODAY, WITH INTENTION</span><button data-action="tasks" aria-label="Open Today in Focus Studio"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><h1><strong id="remaining">0</strong> small steps.</h1><p id="workload">Make a little room for what matters.</p><div id="widget-tasks" class="task-list"></div><form id="widget-capture"><label class="sr-only" for="widget-title">Add a task for today</label><input id="widget-title" maxlength="140" required placeholder="Capture a small next step…"><button type="submit" aria-label="Add task">+</button></form></section>
+    <section class="focus-card"><div class="heading"><span>ONE THING AT A TIME</span><button data-action="studio" aria-label="Open the focus studio"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><h2 id="widget-focus-title">Make room for one thing.</h2><div class="timer" id="widget-timer">25:00</div><div class="timer-buttons"><button id="widget-timer-toggle">Begin focus</button><button data-action="studio" class="quiet">Reflect <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div></section>
+    <section class="week-card"><div class="heading"><span>YOUR LAST SEVEN DAYS</span><button data-action="journal" aria-label="Open session journal"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 12 12 4M4 4h8v8"/></svg></button></div><div class="week-stats"><div><strong id="widget-week-minutes">0</strong><span>minutes focused</span></div><div><strong id="widget-week-tasks">0</strong><span>tasks completed</span></div></div></section>
+    <p id="widget-feedback" role="status">A little space beside your work.</p>
+  </main>
+</body></html>

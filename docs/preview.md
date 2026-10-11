@@ -1,6 +1,6 @@
 # Focus Studio preview
 
-Version 0.2.0 · Apple silicon · macOS 13+
+Version 0.3.0 · Apple silicon · macOS 13+
 
 <img src="../desktop/assets/app.png" width="160" height="160" alt="Focus Studio app logo: sun, checkmark, and green mountains">
 
@@ -36,6 +36,16 @@ Record what changed, keep a next step, and optionally complete the linked task. 
 
 ![Session journal with a saved sample reflection](screenshots/journal.png)
 
+## Keep work beside you
+
+The floating window shares the main app's Today tasks, focus session, and seven-day totals. Pin it beside your work and capture or complete tasks without moving through the main views.
+
+![Actual floating widget window](screenshots/floating-widgets.png)
+
+![Seven-day review with actual elapsed demo time](screenshots/weekly-review.png)
+
+The separate native WidgetKit companion is included as source and an Xcode project. Native widget captures are pending a Mac build; the floating window above is an Electron feature. See [widget installation](widgets.md).
+
 ## Catch ideas and personalize
 
 Give passing thoughts a place to land. Turn them into tasks when they become actionable. Preferences offer a name, work mode, and gentler motion.
@@ -54,7 +64,7 @@ npm ci
 npm run capture:previews
 ```
 
-The [capture script](../desktop/scripts/capture-previews.mjs) launches the real development app in a temporary profile, adds sample work through the interface, walks through focus/reflection/ideas, and saves eight PNGs to docs/screenshots/. It closes the app and removes its sample profile afterward. It leaves your production studio untouched.
+The [capture script](../desktop/scripts/capture-previews.mjs) launches the real development app in a temporary profile, adds sample work through the interface, walks through focus/reflection/ideas, and saves ten PNGs to docs/screenshots/. It closes the app and removes its sample profile afterward. It leaves your production studio untouched.
 
 A graphical session is required. On Linux, run with a virtual display such as `DISPLAY=:99 npm run capture:previews` after starting Xvfb. The Linux automation uses Electron's `--no-sandbox` launch flag; the shipped app's isolated renderer settings are unchanged. Native macOS behavior still needs a Mac check.
 

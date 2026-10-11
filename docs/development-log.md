@@ -1,10 +1,21 @@
 # Development log
 
+## 11 October 2026 — Productivity and both Mac widget formats (0.3.0)
+
+The owner chose both floating and desktop/Notification Center widgets and confirmed full Xcode is installed. Defined the increment and acceptance before implementation in feature-plan.md. Added inline quick capture, daily/weekdays/weekly recurrence after completion, and a seven-day review. Optional recurrence fields retain the v2 backup schema; completion keeps history and creates one future task with reset subtasks. Reopening does not create duplicate occurrences.
+
+Added an isolated floating window with Today capture/completion, shared focus controls, pinning, and weekly totals. Main remains the storage boundary; modal-conflict feedback preserves unaccepted capture text. Added a limited atomic widget snapshot and allowlisted native deep links. Included native WidgetKit Today/Focus/Week widgets, a SwiftUI setup companion, deterministic Xcode project, and a local build/verify/install/register command. Native sharing uses a read-only sandbox exception for one summary file; it does not access full studio data.
+
+Seventeen model/storage/bundle cases, the original real Electron journey, and a new real floating-widget journey passed on Linux. Ten actual UI captures were refreshed without JavaScript errors. An OpenStep parser accepted the Xcode project and checked target embedding, source references, plists, entitlements, and scheme XML. Native Xcode build, snapshot entitlement, registration, and WidgetKit rendering are pending on the Mac; the installer and troubleshooting guide make those checks concrete.
+
+Updated the illustrated guide, gallery, widget install guide, README, architecture, roadmap, validation, and decision record. The main app is 0.3.0 and retains the 0.2.1 signing repair already confirmed by the owner. No model API, paid backend, or cloud data sharing was added.
+
+
 ## 11 October 2026 — Local Mac signing correction (0.2.1)
 
 A device crash report from an Apple silicon Mac identified a dyld Team ID rejection of the bundled Electron framework at process launch. The framework was present: the ad-hoc packaging configuration inherited the signing library’s hardenedRuntime: true default. Changed local per-file signing to explicitly disable hardened runtime; Developer ID distribution remains a separate workflow.
 
-Added bundle/signature checks before ZIP creation and an install:mac command that rebuilds, verifies, stages a fresh copy, retains the previous app, and preserves user data. Version 0.2.1 identifies the corrected build. No raw device identifiers or personal crash report are committed. Native macOS rebuild and successful launch still need device confirmation.
+Added bundle/signature checks before ZIP creation and an install:mac command that rebuilds, verifies, stages a fresh copy, retains the previous app, and preserves user data. Version 0.2.1 identifies the corrected build. No raw device identifiers or personal crash report are committed. The owner subsequently confirmed successful 0.2.1 launch after install:mac on their Apple silicon Mac.
 
 ## 11 October 2026 — Visual documentation
 

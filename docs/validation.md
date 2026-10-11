@@ -1,12 +1,33 @@
 # Validation
 
+## Productivity and widgets — version 0.3.0
+
+| Check | Result | Evidence and limit |
+| --- | --- | --- |
+| npm test | 17 passed | Original model/storage/bundle cases plus recurrence, migration, seven-day totals, and snapshot boundary |
+| DISPLAY=:99 npm run test:desktop | Passed | Original task/focus/relaunch/import/export Electron journey on Linux |
+| DISPLAY=:99 npm run test:widgets | Passed | Real second window, shared capture/completion/focus/timer/review, pinning, isolation, feedback, and deep links |
+| DISPLAY=:99 npm run capture:previews | Passed | Ten actual Electron UI captures, isolated sample profile removed; no JavaScript errors |
+| Xcode project/plists/scheme | Structural checks passed | OpenStep parser accepted project; two targets, embedded extension, valid source/icon refs, narrow entitlements, scheme XML |
+| Apple silicon package and ZIP | Passed | Mach-O arm64, version 0.3.0, URL scheme registration, ZIP integrity; Linux cross-build does not execute native signing |
+| Native installer platform guard | Passed on Linux | Refuses to build/install outside the intended Apple silicon Mac environment |
+| Native Xcode compilation, snapshot access, widget galleries | Not run | This environment has no macOS/Xcode; installer is supplied for device validation |
+| Local 0.2.1 repair | Owner confirmed | App opens successfully on their Apple silicon Mac |
+
+New model checks cover leap-day and weekend scheduling, late-completion skipping, subtask reset/new identity, no duplicate occurrence after reopen/export/import, old-backup defaults, future-record exclusion, local calendar boundaries, exact session-time aggregation, three-task snapshot limit, and omission of private notes/reflections/ideas.
+
+The widget journey uses real Electron windows and IPC. It checks the narrow preload, pin state, primary-to-widget updates, recurring completion and reopen without duplication, script-like task text rendered literally, capture rejection retaining input during a primary dialog, timer pause stability, saved snapshots, relaunch into reflection, weekly totals, rejection of a forged primary sender, valid deep-link routing, a link queued during page reload, and a rejected query-bearing link. Temporary profiles are removed. It does not validate macOS always-on-top presentation, WidgetKit rendering, or Launch Services registration.
+
+The native project is source and a reproducible Xcode project, not a claimed Mac-built release. On the intended Mac, run install:widgets and record build/signing, sandbox file access, pluginkit registration, small/medium layout, both galleries, click-through, timer expiry, stale snapshot, and day-rollover results in this document.
+
+
 ## Local Mac packaging correction — version 0.2.1
 
 An Apple silicon device crash report confirmed dyld rejected the existing Electron framework because “mapping process and mapped file (non-platform) have different Team IDs.” Local ad-hoc signing inherited the signing library’s hardened-runtime default. The corrected configuration explicitly disables hardened runtime for local ad-hoc builds; it does not alter system-wide macOS settings or the renderer sandbox.
 
 Twelve model/storage/bundle checks passed on Linux: the original nine checks plus signature-output cases, valid/broken framework links, and rejection of bundle links to external code. The new bundle checker also passed against the previously generated real macOS bundle’s structure. Linux cross-packaging of 0.2.1 completed with the new checks; its ZIP integrity, framework symlink, and bundle version were verified. Cross-packaging does not validate the native signing correction. On macOS, packaging and installation additionally require deep/strict codesign verification and confirm the local main signature has no hardened-runtime flag.
 
-The installer stages and verifies the new app before replacing the personal Applications copy, retains the previous app, and leaves user data untouched. Native codesign execution, install replacement, and successful launch of 0.2.1 still need confirmation on a Mac; the user-provided 0.2.0 crash is device evidence of the problem, not validation of the fix.
+The installer stages and verifies the new app before replacing the personal Applications copy, retains the previous app, and leaves user data untouched. The owner subsequently confirmed that 0.2.1 opens successfully after install:mac on their Apple silicon Mac. This is device confirmation of the local repair; it does not establish notarized distribution or every native control.
 
 ## Visual documentation — 11 October 2026
 

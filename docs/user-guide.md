@@ -12,6 +12,10 @@ Open **To-dos** and click **New task**, or press **Command N**. Give it a specif
 
 ![Task editor with project, priority, planned date, deadline, effort, notes, and subtasks](screenshots/task-editor.png)
 
+For a quick capture, use the field above the To-dos list and press Enter. It creates a task planned for today in the selected project, or General. Open it afterward to add details.
+
+**Repeat after completion** offers daily, weekdays, or weekly. Finishing the task creates one future occurrence with unchecked subtasks and keeps the completed item in history. A delayed completion schedules from today; missed days do not create a backlog. Reopening and completing the same occurrence again does not duplicate its next task. Change the upcoming occurrence if your routine changes. Generated tasks can be deleted like ordinary tasks.
+
 ## 2. Make a manageable Today plan
 
 Choose **Today** to see work planned for today and unfinished overdue deadlines. The daily summary shows remaining tasks, estimated effort, and overdue work. Start with a few achievable items; the suggested next task considers overdue work, then priority and date.
@@ -46,6 +50,16 @@ Open **Session journal** to review saved sessions and reflections. The sample se
 
 ![Journal showing a saved demonstration session, reflection, and next step](screenshots/journal.png)
 
+The journal's **Your last seven days** view shows actual saved focus time and task completions by local date. It excludes future records and does not treat effort estimates as worked time.
+
+![Actual seven-day review from the short documentation session](screenshots/weekly-review.png)
+
+## Keep your plan nearby
+
+Click **Floating widgets ↗** in To-dos or press **Command Shift W**. Pin the compact window beside your work, capture tasks, complete them, and control the same focus session. Native Today, Focus, and Week widgets are available as a separate Xcode companion; see [Mac widget setup](widgets.md).
+
+![Floating widgets with three sample Today tasks and an active countdown](screenshots/floating-widgets.png)
+
 ## 6. Turn ideas into actionable work
 
 Use **Capture an idea** in the **Idea inbox**, or the Studio's quick-capture field. Search your ideas when needed. Each idea's controls let you focus on it, turn it into a task with the plus button, mark it done, or delete it.
@@ -69,6 +83,7 @@ Work saves locally on your Mac. There is a previous-state recovery snapshot, but
 | Command Shift J | Capture an idea |
 | Command K | Quick actions |
 | Command Shift F | Toggle immersive focus |
+| Command Shift W | Floating widgets |
 | Command comma | Preferences |
 | Command Shift E / I | Export / import a backup |
 | Space | Start/pause in the Studio when not typing |

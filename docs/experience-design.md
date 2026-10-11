@@ -46,3 +46,11 @@ Responsive layouts condense the sidebar to an icon rail and then a bottom naviga
 Distinct empty inbox/journal and no-search-results states explain the next action. Timer controls distinguish idle/running/paused/complete. Save status reports storage failures and stale-tab conflicts. Toasts confirm meaningful actions; temporary work remains exportable.
 
 Screenshots from verification live under screenshots/. Test names/notes are confined to isolated browser contexts.
+
+## Productivity and widgets (0.3.0)
+
+Capture a next step directly from To-dos, then add details as needed. Recurrence is selected in the existing task editor and occurs after completion; it never floods the day with missed instances. The seven-day journal view distinguishes actual saved focus time from estimated workload.
+
+The floating window uses the existing cream/green palette, a compact Today card, a landscape-colored focus card, and quiet weekly totals. Pinning, task controls, and view arrows keep it useful beside another app. Capture feedback reflects primary-dialog conflicts and retains text for retry.
+
+Native widgets use the same palette and brief labels in small/medium layouts. Task text is privacy-sensitive in SwiftUI, and a saved timestamp signals cached data. Native clicks open the corresponding app view; task editing and reflection remain in Focus Studio. Native visual/device validation is pending.

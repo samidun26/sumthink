@@ -6,7 +6,7 @@
 
 A standalone, offline desktop workspace for a busy day: tasks, projects, priorities, due dates, subtasks, and immersive focus sessions.
 
-Version 0.2.1 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
+Version 0.3.0 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
 
 ## Preview
 
@@ -37,13 +37,30 @@ Add work with Command N, plan a manageable Today list, and use Focus on a task. 
 
 ## Useful workflows
 
-- Today, Upcoming, All tasks, and Completed.
+- Today, Upcoming, All tasks, and Completed, with inline quick capture.
+- Daily, weekday, and weekly recurring tasks; seven-day progress in the journal.
+- A pinnable floating window for tasks, focus controls, and weekly totals.
+- Native Today, Focus, and Week widgets with a separate Xcode-built companion.
 - Project filters, search across notes/subtasks, priority, due dates, planned dates, and effort estimates.
 - A daily workload summary with overdue work and a suggested next task.
 - Task-to-focus linking, reflections, and an optional complete-task step.
 - Illustrated scenes, immersive view, gentler motion, and opt-in rain.
 - A menu-bar countdown, native shortcuts, Dock badge, and focus completion notification.
 - Local JSON persistence, a previous-state backup, and native import/export. Existing web exports can be imported.
+
+## Mac widgets
+
+Open **Floating widgets ↗** in To-dos or press **Command Shift W** to keep tasks and your focus timer beside your work.
+
+<img src="docs/screenshots/floating-widgets.png" width="370" alt="Actual floating window with Today tasks, focus timer, and weekly progress">
+
+For native desktop/Notification Center widgets, you need macOS 14+ and full Xcode. After installing the updated main app, run from desktop/:
+
+```sh
+npm run install:widgets
+```
+
+Then open the companion, right-click the desktop → **Edit Widgets**, and search **Focus Studio Widgets**. Follow the [widget setup guide](docs/widgets.md), including troubleshooting. The native source and Xcode project are included; their build and gallery appearance still need confirmation on a Mac. The floating workflow has been tested in Electron on Linux.
 
 ## Develop on your Mac
 
@@ -69,6 +86,7 @@ Packaging on a Mac applies an ad-hoc development signature with hardened runtime
 cd desktop
 npm test
 npm run test:desktop
+npm run test:widgets
 ```
 
 The real desktop test requires a graphical session. It was run on Linux with Xvfb and a Linux Electron runtime; it does not verify macOS-specific menu bar, Dock, notifications, Gatekeeper, or VoiceOver behavior.

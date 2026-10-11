@@ -28,7 +28,7 @@ try {
     await page.screenshot({ path: path.join(output, name + '.png'), animations: 'disabled' });
     console.log('Captured ' + name + '.png');
   };
-  async function task({ title, project, priority = 'normal', planned = today, due = '', estimate = '25', notes = '', subtasks = [] }, preview = false) {
+  async function task({ title, project, priority = 'normal', planned = today, due = '', estimate = '25', notes = '', repeat = 'none', subtasks = [] }, preview = false) {
     await page.locator('#task-new').click();
     await page.locator('#task-title').fill(title);
     await page.locator('#task-project').fill(project);
@@ -37,6 +37,7 @@ try {
     await page.locator('#task-due').fill(due);
     await page.locator('#task-estimate').selectOption(estimate);
     await page.locator('#task-notes').fill(notes);
+    await page.locator('#task-repeat').selectOption(repeat);
     for (const text of subtasks) {
       await page.locator('#subtask-add').click();
       await page.locator('#subtask-editor input:not([type="checkbox"])').last().fill(text);
@@ -44,9 +45,9 @@ try {
     if (preview) await capture('task-editor');
     await page.locator('#task-form button[type="submit"]').click();
   }
-  await task({ title: 'Prepare project proposal', project: 'Client work', priority: 'high', due: nextDay(1), estimate: '45', notes: 'Done means a clear outline and a useful next step.', subtasks: ['Gather context', 'Draft outline', 'Send for review'] }, true);
+  await task({ title: 'Prepare project proposal', project: 'Client work', priority: 'high', due: nextDay(1), estimate: '45', repeat: 'weekly', notes: 'Done means a clear outline and a useful next step.', subtasks: ['Gather context', 'Draft outline', 'Send for review'] }, true);
   await task({ title: 'Review feedback', project: 'Client work', due: nextDay(-1), subtasks: ['Read comments', 'Choose the next revision'] });
-  await task({ title: 'Clear the inbox', project: 'Admin', estimate: '15' });
+  await task({ title: 'Clear the inbox', project: 'Admin', estimate: '15', repeat: 'weekdays' });
   await task({ title: 'Plan next week', project: 'Personal', planned: nextDay(2), estimate: '25' });
   const proposal = page.locator('.todo-card').filter({ hasText: 'Prepare project proposal' });
   await proposal.locator('summary').click();
@@ -59,6 +60,14 @@ try {
   await capture('focus-session');
   await page.locator('#immerse-toggle').click();
   await capture('immersive');
+  const opened = app.waitForEvent('window');
+  await page.evaluate(() => window.focusDesktop.openCompanion());
+  const widgets = await opened;
+  widgets.on('pageerror', error => errors.push(error.message));
+  await widgets.locator('#widget-timer-toggle').waitFor({ state: 'visible' });
+  await widgets.screenshot({ path: path.join(output, 'floating-widgets.png'), animations: 'disabled' });
+  console.log('Captured floating-widgets.png');
+  await widgets.locator('#widget-close').click().catch(error => { if (!widgets.isClosed()) throw error; });
   await page.keyboard.press('Escape');
   await page.locator('#finish-focus').click();
   await page.locator('#reflection').fill('The outline is ready. Next session: expand the main sections.');
@@ -75,10 +84,12 @@ try {
   await page.locator('[data-view="journal"]').click();
   await page.locator('.session-row').waitFor({ state: 'visible' });
   await capture('journal');
+  await page.locator('.weekly-review').screenshot({ path: path.join(output, 'weekly-review.png'), animations: 'disabled' });
+  console.log('Captured weekly-review.png');
   await page.locator('#settings-open').click();
   await capture('preferences');
   if (errors.length) throw new Error(errors.join('\n'));
-  console.log('Eight actual Electron UI captures saved; no JavaScript errors. Sample data stays in the temporary profile.');
+  console.log('Ten actual Electron UI captures saved; no JavaScript errors. Sample data stays in the temporary profile.');
 } finally {
   if (app) await app.close().catch(() => {});
   await rm(data, { recursive: true, force: true });

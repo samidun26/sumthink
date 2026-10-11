@@ -1,6 +1,6 @@
 # Product brief
 
-Current product: Focus Studio for macOS, version 0.2.1.
+Current product: Focus Studio for macOS, version 0.3.0.
 
 ## Confirmed owner context
 
@@ -35,3 +35,7 @@ No global shortcuts, deadline reminder notifications, recurring tasks, calendar 
 The owner can capture work, plan today, focus on a linked task, and retrieve its result without changing tools. Data survives app relaunch; backups can be exported and restored, including old web exports. Paused time does not count toward sessions. Date-based planning uses the Mac's local calendar day. Effort estimates exclude completed tasks.
 
 Real-world usefulness should be judged through owner feedback after an actual workday.
+
+## Confirmed productivity increment (0.3.0)
+
+The owner requested both floating and desktop/Notification Center widgets, confirmed full Xcode is installed, and confirmed 0.2.1 opens on their Apple silicon Mac. The increment adds quick task capture, recurring tasks after completion, seven-day review, a live floating companion, and a separate native WidgetKit companion. Their exact job remains unspecified; these features target the confirmed heavy workload without inventing a role. Native Xcode build/gallery validation remains a device step.

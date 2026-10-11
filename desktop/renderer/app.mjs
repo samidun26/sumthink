@@ -1,5 +1,7 @@
 import { STORAGE_KEY, SCENES, freshState, freshTimer, parseState, remainingSeconds, elapsedSeconds, startTimer, pauseTimer, tickTimer } from './core.mjs';
-import { localDay, normalizeTask, sortTasks, taskMatches, daySummary, isOverdue } from './tasks.mjs';
+import { localDay, normalizeTask, sortTasks, taskMatches, daySummary, isOverdue, setTaskDone } from './tasks.mjs';
+
+import { weekSummary } from './productivity.mjs';
 
 const $ = id => document.getElementById(id);
 let state;
@@ -164,7 +166,7 @@ function finishSession(event) {
     seconds: elapsedSeconds(state.timer), reflection: $('reflection').value.trim(), nextStep: state.nextStep, createdAt: new Date().toISOString(), taskId: state.timer.taskId });
   if ($('complete-focus-task').checked && !$('complete-task-label').hidden) {
     const task = state.tasks.find(task => task.id === state.timer.taskId);
-    if (task) { task.done = true; task.completedAt = new Date().toISOString(); state.activeTaskId = null; }
+    if (task) { state.tasks = setTaskDone(state.tasks, task.id, true).tasks; state.activeTaskId = null; }
   }
   state.timer = freshTimer(state.timer.duration / 60);
   completionPrompted = false;
@@ -211,6 +213,19 @@ function renderIdeas() {
   }
 }
 function renderJournal() {
+  const week = weekSummary(state);
+  $('week-focus').textContent = formatDuration(week.seconds);
+  $('week-completed').textContent = String(week.completed);
+  $('week-sessions').textContent = String(week.sessions);
+  const maximum = Math.max(60, ...week.days.map(day => day.seconds));
+  $('week-days').replaceChildren(...week.days.map(day => {
+    const column = element('div', 'week-day');
+    const label = new Date(day.day + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short' });
+    column.setAttribute('aria-label', `${label}: ${formatDuration(day.seconds)}, ${day.completed} tasks completed`);
+    const track = element('div', 'week-track'); track.setAttribute('aria-hidden', 'true');
+    const fill = element('span', 'week-fill'); fill.style.height = (day.seconds ? Math.max(3, day.seconds / maximum * 100) : 0) + '%'; track.append(fill);
+    column.append(track, element('span', '', label), element('small', '', formatDuration(day.seconds))); return column;
+  }));
   $('session-count').textContent = String(state.sessions.length);
   $('focus-total').textContent = formatDuration(state.sessions.reduce((total, session) => total + session.seconds, 0));
   $('captured-total').textContent = String(state.ideas.length);
@@ -376,6 +391,7 @@ function renderTasks() {
     const meta = element('div', 'todo-meta');
     meta.append(element('span', 'priority-label priority-' + task.priority, { high: 'High priority', normal: 'Normal priority', low: 'Low priority' }[task.priority]), element('span', 'project-chip', task.project), element('span', '', task.estimate + ' min'));
     if (task.dueDate) meta.append(element('span', isOverdue(task, today) ? 'overdue-label' : '', (isOverdue(task, today) ? 'Overdue · ' : 'Due ') + readableDay(task.dueDate)));
+    if (task.repeat !== 'none') meta.append(element('span', 'repeat-chip', { daily: '↻ Daily', weekdays: '↻ Weekdays', weekly: '↻ Weekly' }[task.repeat]));
     if (task.plannedDate) meta.append(element('span', '', 'Planned ' + (task.plannedDate === today ? 'today' : readableDay(task.plannedDate))));
     content.append(title, meta);
     const actions = element('div', 'todo-actions');
@@ -398,9 +414,10 @@ function renderTasks() {
   $('focus-next-task').onclick = () => active ? focusTask(active) : setView('tasks');
 }
 function toggleTask(task) {
-  task.done = !task.done; task.completedAt = task.done ? new Date().toISOString() : null;
-  if (task.done && state.activeTaskId === task.id) state.activeTaskId = null;
-  persist(); renderTasks(); toast(task.done ? 'One less thing on your mind.' : 'Task reopened.');
+  const done = !task.done;
+  const result = setTaskDone(state.tasks, task.id, done); state.tasks = result.tasks;
+  if (done && state.activeTaskId === task.id) state.activeTaskId = null;
+  persist(); renderTasks(); renderJournal(); toast(result.generated ? 'Done. Your next occurrence is ready.' : done ? 'One less thing on your mind.' : 'Task reopened.');
 }
 function focusTask(task) {
   if (state.timer.phase !== 'idle') { toast('Finish or reset your current session before switching tasks.'); return; }
@@ -426,6 +443,7 @@ function openTask(task = null, initialText = '') {
   $('task-planned').value = task ? task.plannedDate : (taskFilter === 'today' ? localDay() : '');
   $('task-due').value = task?.dueDate || '';
   $('task-estimate').value = String(task?.estimate || 25);
+  $('task-repeat').value = task?.repeat || 'none';
   $('task-notes').value = task?.notes || (initialText.length > 140 ? initialText : '');
   $('subtask-editor').replaceChildren(); for (const subtask of task?.subtasks || []) appendSubtask(subtask);
   $('task-delete').hidden = !task; openDialog('task-dialog'); $('task-title').focus();
@@ -435,7 +453,7 @@ function saveTask(event) {
   const existing = state.tasks.find(t => t.id === editingTaskId);
   const task = normalizeTask({ ...existing, id: editingTaskId || crypto.randomUUID(), title: $('task-title').value,
     project: $('task-project').value, priority: $('task-priority').value,
-    plannedDate: $('task-planned').value, dueDate: $('task-due').value, estimate: Number($('task-estimate').value), notes: $('task-notes').value,
+    plannedDate: $('task-planned').value, dueDate: $('task-due').value, estimate: Number($('task-estimate').value), repeat: $('task-repeat').value, notes: $('task-notes').value,
     subtasks: [...$('subtask-editor').children].map(row => ({ id: row.dataset.id, title: row.querySelector('input:not([type="checkbox"])').value, done: row.querySelector('input[type="checkbox"]').checked })) });
   if (existing) state.tasks[state.tasks.indexOf(existing)] = task; else state.tasks.unshift(task);
   if (state.activeTaskId === task.id && state.timer.phase === 'idle') { state.title = task.title; $('focus-title').value = task.title; }
@@ -456,6 +474,13 @@ async function importData() {
   } catch { toast('This backup could not be read.'); }
 }
 function runCommand(command) {
+  if (command && typeof command === 'object') {
+    if (document.querySelector('dialog[open]')) { toast('Finish the open dialog first.'); window.focusDesktop?.widgetFeedback({ message: 'Finish the open dialog in Focus Studio first.', showMain: true }); return; }
+    if (command.type === 'widget-complete') { const task = state.tasks.find(t => t.id === command.id && !t.done); if (task) toggleTask(task); }
+    if (command.type === 'widget-focus') { const task = state.tasks.find(t => t.id === command.id && !t.done); if (task) focusTask(task); }
+    if (command.type === 'widget-add' && typeof command.title === 'string') { quickTask(command.title, 'General'); window.focusDesktop?.widgetFeedback({ message: 'Captured for today.', captureTitle: command.title }); }
+    return;
+  }
   if (document.querySelector('dialog[open]')) return;
   ({ timer: toggleTimer, capture: () => openDialog('capture-dialog'), task: () => openTask(),
     immerse: () => { setView('studio'); immerse(); }, settings: openSettings, tasks: () => setView('tasks'),
@@ -468,9 +493,18 @@ $('task-delete').onclick = () => {
   if (state.timer.phase !== 'idle' && state.timer.taskId === editingTaskId) { toast('Finish or reset the linked focus session before deleting this task.'); return; }
   if (!confirm('Delete this task and its subtasks? Your saved focus sessions will remain.')) return;
   state.tasks = state.tasks.filter(t => t.id !== editingTaskId); if (state.activeTaskId === editingTaskId) state.activeTaskId = null;
-  persist(); renderTasks(); $('task-dialog').close(); toast('Task removed.');
+  persist(); renderTasks(); renderJournal(); $('task-dialog').close(); toast('Task removed.');
 };
 document.querySelectorAll('[data-task-filter]').forEach(button => button.onclick = () => { taskFilter = button.dataset.taskFilter; renderTasks(); });
 $('task-search').oninput = renderTasks; $('project-filter').onchange = renderTasks; $('import-data').onclick = importData;
 window.focusDesktop?.onCommand(runCommand);
 if (window.focusDesktop) document.body.classList.add('desktop-app');
+
+function quickTask(title, project = $('project-filter').value || 'General') {
+  if (!title.trim()) return;
+  state.tasks.unshift(normalizeTask({ id: crypto.randomUUID(), title, plannedDate: localDay(), project }));
+  persist(); renderTasks(); toast('A task captured for today.');
+}
+$('quick-task-form').onsubmit = event => { event.preventDefault(); quickTask($('quick-task').value); $('quick-task').value = ''; };
+$('companion-open').onclick = () => window.focusDesktop?.openCompanion();
+$('companion-open').hidden = !window.focusDesktop;

@@ -1,4 +1,5 @@
 export const PRIORITIES = ['high', 'normal', 'low'];
+export const REPEATS = ['none', 'daily', 'weekdays', 'weekly'];
 export function localDay(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
@@ -17,11 +18,42 @@ export function normalizeTask(task) {
     dueDate: validDay(task.dueDate) ? task.dueDate : '',
     plannedDate: validDay(task.plannedDate) ? task.plannedDate : '',
     estimate: [15, 25, 45, 60, 90].includes(task.estimate) ? task.estimate : 25,
+    repeat: REPEATS.includes(task.repeat) ? task.repeat : 'none',
+    nextOccurrenceId: typeof task.nextOccurrenceId === 'string' ? task.nextOccurrenceId.slice(0, 100) : null,
     done: task.done === true,
     createdAt: typeof task.createdAt === 'string' && Number.isFinite(Date.parse(task.createdAt)) ? task.createdAt : new Date().toISOString(),
     completedAt: task.done && typeof task.completedAt === 'string' && Number.isFinite(Date.parse(task.completedAt)) ? task.completedAt : null,
     subtasks: (Array.isArray(task.subtasks) ? task.subtasks : []).filter(s => typeof s?.id === 'string' && typeof s.title === 'string' && s.title.trim()).slice(0, 100).map(s => ({ id: s.id.slice(0, 100), title: s.title.trim().slice(0, 140), done: s.done === true })),
   };
+}
+export function addDays(day, count) {
+  if (!validDay(day)) throw new Error('Invalid calendar day');
+  const date = new Date(day + 'T12:00:00');
+  date.setDate(date.getDate() + count);
+  return localDay(date);
+}
+export function nextRecurringDay(day, repeat) {
+  let next = addDays(day, repeat === 'weekly' ? 7 : 1);
+  if (repeat === 'weekdays') {
+    while ([0, 6].includes(new Date(next + 'T12:00:00').getDay())) next = addDays(next, 1);
+  }
+  return next;
+}
+export function setTaskDone(tasks, id, done, now = new Date(), createId = () => crypto.randomUUID()) {
+  const task = tasks.find(item => item.id === id);
+  if (!task || task.done === done) return { tasks, generated: null };
+  const updated = { ...task, done, completedAt: done ? now.toISOString() : null };
+  let generated = null;
+  if (done && task.repeat !== 'none' && !task.nextOccurrenceId) {
+    const today = localDay(now);
+    generated = normalizeTask({ ...task, id: createId(), done: false, completedAt: null, nextOccurrenceId: null,
+      createdAt: now.toISOString(), plannedDate: nextRecurringDay(task.plannedDate > today ? task.plannedDate : today, task.repeat),
+      dueDate: task.dueDate ? nextRecurringDay(task.dueDate > today ? task.dueDate : today, task.repeat) : '',
+      subtasks: task.subtasks.map(subtask => ({ ...subtask, id: createId(), done: false })) });
+    updated.nextOccurrenceId = generated.id;
+  }
+  const result = tasks.map(item => item.id === id ? updated : item);
+  return { tasks: generated ? [generated, ...result] : result, generated };
 }
 export function isToday(task, today = localDay()) {
   if (task.done) return task.plannedDate === today || task.dueDate === today || (!!task.completedAt && localDay(new Date(task.completedAt)) === today);

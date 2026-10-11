@@ -16,6 +16,8 @@ Current product: the standalone Apple silicon macOS app. Start with the [illustr
 | [User guide](user-guide.md) | Illustrated daily workflow, shortcuts, and backups | User-visible behavior changes |
 | [Preview gallery](preview.md) | Logo, screenshots, and reproducible capture instructions | Visual or workflow changes |
 | [Deployment](deployment.md) | Source and desktop packaging procedure | Hosting or release workflow changes |
+| [Feature plan](feature-plan.md) | Productivity and widget scope, acceptance, and data boundaries | Increment starts or changes |
+| [Mac widgets](widgets.md) | Floating controls, native Xcode setup, snapshot sharing, and troubleshooting | Widget changes or native validation |
 | [macOS app](macos-app.md) | Installation, native controls, task workflow, backup, and platform limits | Desktop behavior or release changes |
 
 ## Documentation rules

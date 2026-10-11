@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const pkg = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 const staging = await mkdtemp(path.join(tmpdir(), 'focus-studio-stage-'));
 try {
-  for (const item of ['main.cjs', 'preload.cjs', 'storage.cjs', 'renderer', 'assets']) await cp(path.join(root, item), path.join(staging, item), { recursive: true });
+  for (const item of ['main.cjs', 'preload.cjs', 'widget-preload.cjs', 'storage.cjs', 'renderer', 'assets']) await cp(path.join(root, item), path.join(staging, item), { recursive: true });
   await import('node:fs/promises').then(fs => fs.writeFile(path.join(staging, 'package.json'), JSON.stringify({ name: pkg.name, productName: pkg.productName, version: pkg.version, main: pkg.main, description: pkg.description })));
   const outputs = await packager({
     dir: staging, name: 'Focus Studio', platform: 'darwin', arch: 'arm64',
@@ -21,7 +21,7 @@ try {
     // signer's hardened-runtime default: dyld rejects the bundled framework.
     osxSign: process.platform === 'darwin' ? { identity: '-', identityValidation: false, preAutoEntitlements: false, preEmbedProvisioningProfile: false, continueOnError: false, optionsForFile: () => ({ timestamp: 'none', hardenedRuntime: false }) } : false, osxNotarize: false,
     extraResource: [path.join(root, '..', 'docs'), path.join(root, '..', 'README.md')],
-    extendInfo: { NSHumanReadableCopyright: 'A personal workspace for intentional work.' },
+    extendInfo: { CFBundleURLTypes: [{ CFBundleURLName: 'Focus Studio', CFBundleURLSchemes: ['focusstudio'] }], NSHumanReadableCopyright: 'A personal workspace for intentional work.' },
     download: { cacheRoot: process.env.FOCUS_STUDIO_ELECTRON_CACHE || path.join(tmpdir(), 'focus-studio-electron-cache') },
   });
   const app = path.join(outputs[0], 'Focus Studio.app');

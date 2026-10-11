@@ -1,7 +1,7 @@
 # macOS application guide
 
 Date: 2026-10-11 (Asia/Jakarta).
-Version: 0.2.1.
+Version: 0.3.0.
 Target: Apple silicon, macOS 13+.
 
 ## Install or repair from the repository
@@ -14,7 +14,7 @@ npm ci
 npm run install:mac
 ```
 
-The installer builds version 0.2.1, checks the framework links and code signature, copies a fresh bundle into ~/Applications/Focus Studio.app, retains the previous app as a .backup directory, and requests launch. It does not delete tasks, journal, preferences, or studio recovery files. The temporary copied app is verified before replacing the installation. If the replacement rename fails, the installer restores the previous app.
+The installer builds version 0.3.0, checks the framework links and code signature, copies a fresh bundle into ~/Applications/Focus Studio.app, retains the previous app as a .backup directory, and requests launch. It does not delete tasks, journal, preferences, or studio recovery files. The temporary copied app is verified before replacing the installation. If the replacement rename fails, the installer restores the previous app.
 
 The installer targets your personal Applications folder. A separate copy in /Applications is not replaced; use the path printed by the installer when checking the repaired version.
 
@@ -22,11 +22,11 @@ Local ad-hoc signing explicitly disables hardened runtime. This avoids Developer
 
 ## App bundle
 
-Packaging generates desktop/release/Focus-Studio-0.2.1-mac-arm64.zip; generated archives are excluded from this repository. It contains Focus Studio.app. If you have the archive, extract it, move the app to Applications, and open it through Finder. Once installed, the app works independently of Terminal, a browser, and Codex.
+Packaging generates desktop/release/Focus-Studio-0.3.0-mac-arm64.zip; generated archives are excluded from this repository. It contains Focus Studio.app. If you have the archive, extract it, move the app to Applications, and open it through Finder. Once installed, the app works independently of Terminal, a browser, and Codex.
 
 This cloud-built preview is not Developer ID signed or notarized. Gatekeeper may block launch. Use macOS's app-specific Open Anyway option only if it is offered and you trust this build. Do not disable Gatekeeper globally.
 
-If the downloaded preview cannot launch, use the source on your Mac: install Node 24+, run npm ci and npm start in desktop/, or run npm run package:mac to produce a local ad-hoc-signed build. macOS packaging/signing cannot be run in this Linux environment; successful Mac launch of the 0.2.1 correction still needs device confirmation. Developer ID signing and notarization need a Mac and the app owner's Apple developer credentials.
+If the downloaded preview cannot launch, use the source on your Mac: install Node 24+, run npm ci and npm start in desktop/, or run npm run package:mac to produce a local ad-hoc-signed build. macOS packaging/signing cannot be run in this Linux environment; the owner confirmed version 0.2.1 opens successfully. Version 0.3.0 retains that signing correction; its new features still need a Mac check. Developer ID signing and notarization need a Mac and the app owner's Apple developer credentials.
 
 See the [illustrated walkthrough](user-guide.md) and [screenshot gallery](preview.md) for examples of the interface.
 
@@ -42,6 +42,12 @@ See the [illustrated walkthrough](user-guide.md) and [screenshot gallery](previe
 Overdue unfinished deadlines appear in Today even if the planned date is later. Upcoming excludes work already actionable today. Finished tasks live in Completed. Completed items from older days do not inflate today's progress.
 
 The suggested next task ranks overdue work before priority, then date. Effort estimates are planning estimates, not a measurement of actual productivity.
+
+## Productivity additions in 0.3.0
+
+Capture a task directly from the To-dos field and press Enter. It is planned for today and uses the selected project, or General when no project is selected. The task editor offers daily, weekday, and weekly recurrence after completion. The journal adds seven local calendar days of actual focus time, saved sessions, and completed tasks.
+
+Open the floating companion with Command Shift W. For native desktop and Notification Center widgets, build the companion with `npm run install:widgets`; it requires macOS 14+ and full Xcode. See [Mac widgets](widgets.md) for setup, refresh behavior, and device validation limits.
 
 ## Task details
 
@@ -63,6 +69,7 @@ An idea can become a task through the inbox's plus action. Search matches task t
 | Command comma | Preferences |
 | Command Shift E / I | Export / import backup |
 | Command Shift F | Immersive focus |
+| Command Shift W | Floating widgets |
 | Space | Start/pause a session when not typing in the Studio |
 | Command Q | Quit the application |
 
@@ -86,7 +93,7 @@ A 10 MB backup limit protects the local I/O boundary. There is no automatic web 
 
 The actual Electron UI was tested on Linux with a graphical virtual display. The macOS bundle was cross-built and structurally inspected for the arm64 binary, bundle identity, app version, icon, local app archive, and included docs.
 
-A real Mac is still needed to check Finder launch, Gatekeeper/signing, menu-bar template rendering, Dock badge, notifications, sleep/wake, traffic-light controls, and VoiceOver. The ZIP is a preview artifact, not a notarized distribution release.
+The owner confirmed local 0.2.1 installation and launch. A real Mac is still needed to validate the 0.3.0 additions, native WidgetKit companion, Gatekeeper distribution behavior, menu-bar template rendering, Dock badge, notifications, sleep/wake, traffic-light controls, and VoiceOver. The ZIP is a preview artifact, not a notarized distribution release.
 
 ## Launch crash troubleshooting
 

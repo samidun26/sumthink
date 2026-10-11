@@ -7,3 +7,6 @@ desktop/release/
 .openai/
 .env
 .env.*
+widgets/build/
+widgets/**/*.xcuserstate
+widgets/**/xcuserdata/

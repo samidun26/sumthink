@@ -11,8 +11,9 @@ if (process.env.FOCUS_STUDIO_TEST_DATA && !app.isPackaged) {
 }
 protocol.registerSchemesAsPrivileged([{ scheme: 'focus', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }]);
 const rendererRoot = path.join(__dirname, 'renderer');
-const permittedFiles = new Set(['index.html', 'app.mjs', 'core.mjs', 'tasks.mjs', 'style.css', 'favicon.svg']);
-let window, tray, storage, parseState, quitting = false;
+const permittedFiles = new Set(['index.html', 'app.mjs', 'core.mjs', 'tasks.mjs', 'style.css', 'favicon.svg', 'productivity.mjs', 'widget.html', 'widget.css', 'widget.mjs']);
+let window, companion, tray, storage, parseState, makeWidgetSnapshot, currentState, quitting = false;
+let snapshotDay = null, pendingLink = null;
 let focusBlocker = null;
 let latestTimer = { phase: 'idle', remaining: 1500, title: '' };
 
@@ -20,6 +21,37 @@ function trusted(event) {
   if (!window || event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame) return false;
   try { const url = new URL(event.senderFrame.url); return url.protocol === 'focus:' && url.hostname === 'app' && url.pathname === '/index.html'; }
   catch { return false; }
+}
+function trustedCompanion(event) {
+  return !!companion && event.sender === companion.webContents && event.senderFrame === companion.webContents.mainFrame && event.senderFrame.url === 'focus://app/widget.html';
+}
+function publishWidgets(force = false) {
+  if (!currentState || !makeWidgetSnapshot) return;
+  const snapshot = makeWidgetSnapshot(currentState);
+  if (companion && !companion.isDestroyed()) companion.webContents.send('widget:update', snapshot);
+  if (force || snapshotDay !== snapshot.day) {
+    try { atomicWrite(path.join(path.dirname(storage.file), 'widget-snapshot.json'), JSON.stringify(snapshot)); snapshotDay = snapshot.day; }
+    catch (error) { console.error('Widget snapshot could not be saved:', error.message); }
+  }
+}
+function showCompanion() {
+  if (companion && !companion.isDestroyed()) { companion.show(); companion.focus(); return; }
+  companion = new BrowserWindow({ width: 370, height: 760, minWidth: 350, minHeight: 600, show: false,
+    title: 'Focus Studio · Floating widgets', frame: false, alwaysOnTop: true, resizable: true, backgroundColor: '#f6f5ef',
+    webPreferences: { preload: path.join(__dirname, 'widget-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
+  companion.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  companion.webContents.on('will-navigate', event => event.preventDefault());
+  companion.once('ready-to-show', () => { companion.show(); publishWidgets(); });
+  companion.on('closed', () => { companion = null; });
+  companion.loadURL('focus://app/widget.html');
+}
+function handleLink(value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== 'focusstudio:' || !['tasks', 'studio', 'journal', 'companion'].includes(url.hostname) || !['', '/'].includes(url.pathname) || url.search || url.hash || url.username || url.password || url.port) return;
+    if (!storage || !window || window.webContents.isLoadingMainFrame()) { pendingLink = value; return; }
+    if (url.hostname === 'companion') showCompanion(); else command(url.hostname);
+  } catch {}
 }
 function showWindow() { if (!storage || !app.isReady()) return; if (!window) createWindow(); if (window.isMinimized()) window.restore(); window.show(); window.focus(); }
 function command(name) { showWindow(); window.webContents.send('studio:command', name); }
@@ -30,6 +62,7 @@ function trayMenu() {
     { label: 'Open today’s plan', click: () => command('tasks') },
     { label: 'Start / pause focus', click: () => command('timer') },
     { label: 'New task', click: () => command('task') },
+    { label: 'Floating widgets', click: showCompanion },
     { type: 'separator' }, { label: 'Quit Focus Studio', role: 'quit' },
   ]);
 }
@@ -43,6 +76,7 @@ function createWindow() {
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   window.webContents.on('will-navigate', event => event.preventDefault());
   window.once('ready-to-show', () => window.show());
+  window.webContents.on('did-finish-load', () => { if (pendingLink) { const value = pendingLink; pendingLink = null; handleLink(value); } });
   window.on('close', event => {
     if (process.platform === 'darwin' && !quitting) { event.preventDefault(); window.hide(); }
   });
@@ -70,6 +104,7 @@ function installMenu() {
       { label: 'Idea Inbox', accelerator: 'CmdOrCtrl+3', click: () => command('ideas') },
       { label: 'Session Journal', accelerator: 'CmdOrCtrl+4', click: () => command('journal') },
       { type: 'separator' }, { label: 'Immersive Focus', accelerator: 'CmdOrCtrl+Shift+F', click: () => command('immerse') },
+      { label: 'Floating Widgets', accelerator: 'CmdOrCtrl+Shift+W', click: showCompanion },
       { role: 'togglefullscreen' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' },
     ] },
     { label: 'Window', submenu: [{ role: 'minimize' }, { role: 'zoom' }, { label: 'Show Focus Studio', click: showWindow }, { role: 'front' }] },
@@ -82,6 +117,25 @@ function installMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 function installIPC() {
+  ipcMain.on('studio:companion', event => { if (trusted(event)) showCompanion(); });
+  ipcMain.on('studio:widget-feedback', (event, feedback) => {
+    if (!trusted(event) || !companion || companion.isDestroyed() || typeof feedback?.message !== 'string' || feedback.message.length > 180) return;
+    companion.webContents.send('widget:feedback', { message: feedback.message, captureTitle: typeof feedback.captureTitle === 'string' ? feedback.captureTitle.slice(0, 140) : null });
+    if (feedback.showMain === true) showWindow();
+  });
+  ipcMain.handle('widget:snapshot', event => trustedCompanion(event) ? makeWidgetSnapshot(currentState) : null);
+  ipcMain.on('widget:pin', (event, enabled) => { if (trustedCompanion(event) && typeof enabled === 'boolean') companion.setAlwaysOnTop(enabled); });
+  ipcMain.on('widget:close', event => { if (trustedCompanion(event)) companion.close(); });
+  ipcMain.on('widget:action', (event, action) => {
+    if (!trustedCompanion(event) || !action || !window) return;
+    if (['tasks', 'studio', 'journal', 'task'].includes(action.type)) { command(action.type); return; }
+    if (action.type === 'timer') { if (currentState.timer.phase === 'complete') showWindow(); window.webContents.send('studio:command', 'timer'); return; }
+    if (action.type === 'add' && typeof action.title === 'string' && action.title.trim() && action.title.length <= 140) window.webContents.send('studio:command', { type: 'widget-add', title: action.title });
+    if (['complete', 'focus'].includes(action.type) && typeof action.id === 'string' && currentState.tasks.some(t => t.id === action.id && !t.done)) {
+      if (action.type === 'focus') showWindow();
+      window.webContents.send('studio:command', { type: 'widget-' + action.type, id: action.id });
+    }
+  });
   ipcMain.on('studio:pending-tasks', (event, count) => {
     if (trusted(event) && process.platform === 'darwin' && Number.isInteger(count) && count >= 0 && count <= 100000) app.dock.setBadge(count ? String(count) : '');
   });
@@ -90,6 +144,7 @@ function installIPC() {
     if (!trusted(event)) return { ok: false, error: 'Untrusted window' };
     try {
       const value = storage.save(raw);
+      currentState = parseState(value); publishWidgets(true);
       if (process.platform === 'darwin') {
         const state = parseState(value); const today = new Date();
         const day = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -117,6 +172,7 @@ function installIPC() {
       if (result.canceled) return { canceled: true };
       if (fs.statSync(result.filePaths[0]).size > MAX_BYTES) throw new Error('Backup exceeds the 10 MB limit.');
       const raw = storage.save(fs.readFileSync(result.filePaths[0], 'utf8'), { replace: true });
+      currentState = parseState(raw); publishWidgets(true);
       return { raw };
     } catch (error) { return { error: error.message }; }
   });
@@ -132,6 +188,7 @@ function installIPC() {
       tray.setToolTip(status.phase === 'idle' ? 'Focus Studio' : `${Math.floor(status.remaining / 60)}:${String(status.remaining % 60).padStart(2, '0')} · ${latestTimer.title || 'Focus Studio'}`);
       if (process.platform === 'darwin') tray.setTitle(status.phase === 'running' ? `${Math.floor(status.remaining / 60)}:${String(status.remaining % 60).padStart(2, '0')}` : '');
     }
+    publishWidgets(changed && latestTimer.phase !== 'running');
     if (finished && Notification.isSupported()) {
       const notice = new Notification({ title: 'A little further along.', body: 'Your focus session is complete. Leave a reflection and a next step.', silent: true });
       notice.on('click', () => command('studio')); notice.show();
@@ -141,15 +198,18 @@ function installIPC() {
 const lock = app.requestSingleInstanceLock();
 if (!lock) app.quit();
 else {
-  app.on('second-instance', showWindow);
+  app.on('second-instance', (_event, args) => { const link = args.find(value => value.startsWith('focusstudio://')); if (link) handleLink(link); else showWindow(); });
+  app.on('open-url', (event, value) => { event.preventDefault(); handleLink(value); });
   app.on('before-quit', () => { quitting = true; if (focusBlocker !== null) powerSaveBlocker.stop(focusBlocker); });
   app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
   app.on('activate', showWindow);
   app.whenReady().then(async () => {
+    ({ widgetSnapshot: makeWidgetSnapshot } = await import(pathToFileURL(path.join(rendererRoot, 'productivity.mjs')).href));
     ({ parseState } = await import(pathToFileURL(path.join(rendererRoot, 'core.mjs')).href));
     const dataRoot = process.env.FOCUS_STUDIO_TEST_DATA && !app.isPackaged ? process.env.FOCUS_STUDIO_TEST_DATA : app.getPath('userData');
     storage = new StudioStorage(dataRoot, parseState);
-    const loaded = storage.load(); if (loaded.raw) latestTimer = parseState(loaded.raw).timer;
+    const loaded = storage.load(); currentState = parseState(loaded.raw); latestTimer = currentState.timer; publishWidgets(true);
+    const widgetInterval = setInterval(() => publishWidgets(), 1000); widgetInterval.unref();
     protocol.handle('focus', async request => {
       const url = new URL(request.url);
       const filename = url.pathname.slice(1);
@@ -166,6 +226,7 @@ else {
       const image = nativeImage.createFromPath(path.join(__dirname, 'assets', 'trayTemplate.png')); image.setTemplateImage(true);
       tray = new Tray(image); tray.setToolTip('Focus Studio'); tray.setContextMenu(trayMenu()); tray.on('click', showWindow);
     }
+    if (process.platform === 'darwin' && app.isPackaged) app.setAsDefaultProtocolClient('focusstudio');
     createWindow();
   }).catch(error => { console.error('Focus Studio could not start:', error.message); app.quit(); });
 }
