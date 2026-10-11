@@ -1,0 +1,9 @@
+*.tar.gz
+__pycache__/
+.DS_Store
+node_modules/
+desktop/build/
+desktop/release/
+.openai/
+.env
+.env.*

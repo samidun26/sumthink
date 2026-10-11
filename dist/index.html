@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#191e1b">
+  <meta name="description" content="A little room for your biggest ideas. An immersive personal workspace for focus, capture, and reflection.">
+  <title>Focus Studio — Find your flow</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body data-scene="dusk">
+  <svg class="svg-defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9M9 15l1-5L18 2l4 4-8 8-5 1"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 4 6 8H3v8h3l5 4ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 7M4 3v6h6"/></symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C6 1 1 12 7 18c6 6 15 0 13-15ZM5 21 16 8"/></symbol>
+  </defs></svg>
+
+  <aside class="sidebar" aria-label="Main navigation">
+    <a class="brand" href="#studio" aria-label="Focus Studio home"><span class="brand-mark"><svg><use href="#i-sun"/></svg></span><span>focus<span class="brand-light">studio</span><small>A SPACE TO MAKE SPACE</small></span></a>
+    <div class="workspace-label">YOUR WORKSPACE</div>
+    <nav>
+      <button class="nav-button active" data-view="studio"><svg><use href="#i-grid"/></svg>Studio<span class="nav-dot"></span></button>
+      <button class="nav-button" data-view="ideas"><svg><use href="#i-note"/></svg>Idea inbox<span id="idea-count" class="badge">0</span></button>
+      <button class="nav-button" data-view="journal"><svg><use href="#i-clock"/></svg>Session journal</button>
+    </nav>
+    <div class="sidebar-note"><svg><use href="#i-leaf"/></svg><p>Good things take<br>a little focus.</p><span>ONE THING AT A TIME.</span></div>
+    <div class="sidebar-bottom">
+      <button class="nav-button" id="settings-open"><svg><use href="#i-settings"/></svg>Make it yours</button>
+      <button class="profile" id="profile-open"><span id="avatar">Y</span><span><strong id="profile-name">Your personal studio</strong><small>Settle in. Stay curious.</small></span><span class="profile-edit">↗</span></button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar"><span class="breadcrumb">Your workspace <span>/</span> <strong id="page-label">Studio</strong></span><div class="topbar-right"><span id="local-clock"></span><button class="command-button" id="commands-open" aria-label="Open commands">Quick actions <kbd>⌘ K</kbd></button></div></header>
+
+    <section id="studio-view" class="view">
+      <div class="page-heading"><div><div class="eyebrow"><span class="tiny-sun">✳</span> A LITTLE ROOM FOR YOUR BIGGEST IDEAS</div><h1 id="greeting">Find your flow.</h1><p>Less noise. More room for what matters.</p></div><span class="date-pill" id="today-date"></span></div>
+
+      <section class="landscape" aria-label="Focus session">
+        <div class="scene-art" aria-hidden="true"><div class="sun-disc"></div><div class="sun-reflection"></div><svg class="mountains" viewBox="0 0 1400 600" preserveAspectRatio="none"><path class="ridge-back" d="M0 285 Q100 230 205 285T425 275 Q550 165 730 265 Q850 320 970 230T1200 220 Q1300 195 1400 260V600H0Z"/><path class="ridge-mid" d="M0 365 Q125 295 280 370T560 345 Q680 265 810 360 Q1010 410 1140 320T1400 340V600H0Z"/><path class="ridge-front" d="M0 450 Q170 370 360 465 Q500 495 660 430 Q800 380 985 470 Q1150 505 1400 415V600H0Z"/><path class="ridge-near" d="M0 540 Q240 470 400 540 Q630 600 805 515 Q980 450 1400 540V600H0Z"/></svg><div class="grain"></div></div>
+        <div class="scene-top"><span class="scene-label"><span class="live-dot"></span><span id="scene-name">GOLDEN HOUR</span></span><button class="glass-button" id="immerse-toggle" aria-pressed="false"><svg><use href="#i-expand"/></svg><span>Immerse</span><kbd>I</kbd></button></div>
+        <div class="focus-center"><div class="focus-eyebrow" id="focus-status">MAKE ROOM FOR ONE THING</div><input id="focus-title" aria-label="Your focus for this session" placeholder="What will you make space for?" maxlength="140" autocomplete="off"><div class="timer" id="timer" role="timer" aria-label="25 minutes remaining">25<span>:</span>00</div><div class="duration-picker" aria-label="Session duration"><button data-minutes="25" class="selected" aria-pressed="true">25 min</button><button data-minutes="45" aria-pressed="false">45 min</button><button data-minutes="60" aria-pressed="false">60 min</button></div><div class="timer-actions"><button id="start-focus" class="primary-button"><svg><use href="#i-play"/></svg><span>Begin focus</span><kbd>Space</kbd></button><button id="reset-focus" class="round-button" aria-label="Reset session timer"><svg><use href="#i-reset"/></svg></button><button id="finish-focus" class="glass-button" hidden>Finish session</button></div></div>
+        <div class="scene-bottom"><span><svg><use href="#i-leaf"/></svg><span id="scene-caption">Somewhere between a deep breath and a fresh start.</span></span><button class="glass-button sound-toggle" id="sound-toggle" aria-pressed="false"><svg><use href="#i-sound"/></svg><span>Ambient sound</span><span class="toggle-track"></span></button></div>
+      </section>
+
+      <div class="below-grid"><section class="panel intention-panel"><div class="panel-heading"><h2>Your next small step</h2><span class="small-tag">INTENTION</span></div><p>Leave a thread for your future self to pick up.</p><textarea id="next-step" rows="2" maxlength="1000" aria-label="Next step" placeholder="When I come back, I’ll…"></textarea><div class="panel-footer"><span id="save-status"><span class="saved-dot"></span> Saved on this device</span><span>↵ New line</span></div></section><section class="panel capture-panel"><div class="panel-heading"><h2>A thought passing by?</h2><svg class="accent-icon"><use href="#i-note"/></svg></div><p>Catch it here. Come back to it later.</p><form id="quick-capture-form"><label class="sr-only" for="quick-capture">Capture an idea</label><input id="quick-capture" placeholder="An idea, a reminder, a little spark…" maxlength="1000" required autocomplete="off"><button type="submit" aria-label="Save idea"><svg><use href="#i-arrow"/></svg></button></form><div class="panel-footer"><button class="text-button" data-go="ideas">Open your idea inbox <span>↗</span></button><span id="capture-feedback">Let your mind wander.</span></div></section></div>
+
+      <section class="atmospheres"><div class="section-heading"><div><h2>Change the scenery.</h2><p>A different atmosphere. The same space for you.</p></div><span class="small-tag">FIND YOUR MOOD</span></div><div class="scene-cards"><button class="scene-card selected" data-theme="dusk" aria-pressed="true"><span class="mini-scene mini-dusk"><span class="mini-sun"></span><span class="mini-hill"></span><span class="scene-selected">✓</span></span><span class="scene-card-caption"><strong>Golden hour</strong><small>Warm, unhurried, a little dreamy.</small><span>01</span></span></button><button class="scene-card" data-theme="night" aria-pressed="false"><span class="mini-scene mini-night"><span class="mini-sun"></span><span class="mini-hill"></span><span class="scene-selected">✓</span></span><span class="scene-card-caption"><strong>After hours</strong><small>Quiet nights. Brilliant thoughts.</small><span>02</span></span></button><button class="scene-card" data-theme="forest" aria-pressed="false"><span class="mini-scene mini-forest"><span class="mini-sun"></span><span class="mini-hill"></span><span class="scene-selected">✓</span></span><span class="scene-card-caption"><strong>Slow morning</strong><small>A fresh perspective, naturally.</small><span>03</span></span></button></div></section>
+      <footer class="page-footer"><span>Made for a slower, more intentional kind of productive.</span><button class="text-button" id="shortcuts-open">A few handy shortcuts <kbd>?</kbd></button></footer>
+    </section>
+
+    <section id="ideas-view" class="view" hidden><div class="page-heading"><div><div class="eyebrow">COLLECT NOW. CONNECT LATER.</div><h1>Little sparks.</h1><p>Your ideas deserve a place to land.</p></div><button class="secondary-button" id="idea-new"><svg><use href="#i-plus"/></svg>Capture an idea</button></div><div class="inbox-toolbar"><label class="search-field"><span>⌕</span><input id="idea-search" type="search" placeholder="Find a thought…" aria-label="Search ideas"></label><span id="idea-summary"></span></div><div class="ideas-list" id="ideas-list"></div></section>
+
+    <section id="journal-view" class="view" hidden><div class="page-heading"><div><div class="eyebrow">A LITTLE PROGRESS, EVERY DAY.</div><h1>Time well spent.</h1><p>A record of what you made room for.</p></div><button class="secondary-button" id="export-data">Export your studio <span>↗</span></button></div><div class="stats-row"><div class="panel"><span>COMPLETED SESSIONS</span><strong id="session-count">0</strong></div><div class="panel"><span>TIME IN FOCUS</span><strong id="focus-total">0 min</strong></div><div class="panel"><span>IDEAS CAPTURED</span><strong id="captured-total">0</strong></div></div><div id="session-list" class="session-list"></div></section>
+  </main>
+
+  <dialog id="settings-dialog"><form method="dialog"><div class="dialog-heading"><div><span class="eyebrow">THIS IS YOUR SPACE</span><h2>Make yourself at home.</h2></div><button class="close-button" aria-label="Close settings" value="cancel">×</button></div><label class="field-label" for="owner-name">What should we call you?</label><input id="owner-name" placeholder="Your name" maxlength="40"><label class="field-label" for="work-mode">What are you making room for?</label><select id="work-mode"><option value="Creative work">Creative work</option><option value="Writing & research">Writing & research</option><option value="Design">Design</option><option value="Development">Development</option><option value="Planning & strategy">Planning & strategy</option><option value="Learning">Learning</option></select><label class="checkbox-label"><input id="motion-setting" type="checkbox">Gentler motion</label><p class="dialog-note">Your notes and preferences stay in this browser. Export them from your session journal whenever you like.</p><button type="button" id="settings-save" class="primary-button">Save preferences <svg><use href="#i-check"/></svg></button></form></dialog>
+  <dialog id="capture-dialog"><form id="capture-form"><div class="dialog-heading"><div><span class="eyebrow">FOLLOW THE SPARK</span><h2>Catch a thought.</h2></div><button type="button" class="close-button" data-close="capture-dialog" aria-label="Close idea capture">×</button></div><label class="sr-only" for="idea-text">Your idea</label><textarea id="idea-text" rows="5" placeholder="What’s on your mind?" required maxlength="1000"></textarea><button class="primary-button" type="submit">Save to inbox <svg><use href="#i-arrow"/></svg></button></form></dialog>
+  <dialog id="finish-dialog"><form id="finish-form"><div class="dialog-heading"><div><span class="eyebrow">A MOMENT TO REFLECT</span><h2>A little further along.</h2></div><button type="button" class="close-button" data-close="finish-dialog" aria-label="Close reflection">×</button></div><p id="finish-summary"></p><label class="field-label" for="reflection">What moved forward?</label><textarea id="reflection" rows="3" maxlength="1000" placeholder="A win, a lesson, or simply showing up…"></textarea><label class="field-label" for="session-next">Your next small step</label><input id="session-next" maxlength="1000" placeholder="Make it easy to begin again."><button class="primary-button" type="submit">Save session <svg><use href="#i-check"/></svg></button></form></dialog>
+  <dialog id="commands-dialog"><div class="dialog-heading"><h2>A few handy shortcuts.</h2><button class="close-button" data-close="commands-dialog" aria-label="Close quick actions">×</button></div><div class="command-list"><button data-command="timer">Start / pause focus <kbd>Space</kbd></button><button data-command="capture">Capture an idea <kbd>⌘ J</kbd></button><button data-command="immerse">Enter / leave immersive view <kbd>I</kbd></button><button data-command="settings">Make it yours <kbd>⌘ ,</kbd></button><button data-command="journal">Open session journal <span>↗</span></button></div><p class="dialog-note">Shortcuts work when you’re not typing. Use Ctrl in place of ⌘ on other keyboards.</p></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

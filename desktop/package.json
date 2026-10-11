@@ -1,0 +1,21 @@
+{
+  "name": "focus-studio-desktop",
+  "productName": "Focus Studio",
+  "version": "0.2.0",
+  "description": "An offline macOS workspace for tasks, daily priorities, and immersive focus.",
+  "main": "main.cjs",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "test": "node tests/model.test.mjs && node tests/storage.test.cjs",
+    "test:desktop": "node tests/desktop.test.mjs",
+    "package:mac": "node scripts/package-mac.mjs"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "@playwright/test": "1.64.0",
+    "electron": "44.7.0",
+    "playwright-core": "1.64.0"
+  }
+}
