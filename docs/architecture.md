@@ -52,6 +52,6 @@ The tray menu shows session state and a running countdown. The Dock badge counts
 
 ## Build and validation
 
-Cross-packaging produces a Mach-O arm64 application for macOS 13+. The Linux build preserves Electron's binary signatures without modifying the integrity digest; it has no Developer ID signature or notarization. Mac packaging attempts local ad-hoc signing and can apply the runtime integrity digest.
+Cross-packaging produces a Mach-O arm64 application for macOS 13+. The Linux build preserves Electron's binary signatures without modifying the integrity digest; it has no Developer ID signature or notarization. Mac packaging uses local ad-hoc signing with hardened runtime explicitly disabled and can apply the runtime integrity digest. Packaging verifies bundle links and, on macOS, the deep signature and absence of the incompatible local runtime flag before archiving. The install:mac command stages and verifies a fresh copy before replacing the personal Applications installation; it retains the previous app and preserves the userData directory.
 
 Nine model/storage scenarios and the real Electron UI journey ran on Linux. Native Mac presentation, signing, Finder launch, notifications, sleep/wake, and VoiceOver remain device checks.

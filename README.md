@@ -6,7 +6,7 @@
 
 A standalone, offline desktop workspace for a busy day: tasks, projects, priorities, due dates, subtasks, and immersive focus sessions.
 
-Version 0.2.0 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
+Version 0.2.1 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
 
 ## Preview
 
@@ -20,14 +20,20 @@ These are actual desktop UI captures with sample work, taken in Electron on Linu
 
 ## Get started
 
-This repository contains source code and documentation. Build the app on your Mac using the commands below; generated app bundles and ZIPs are excluded from Git. If you already have the preview ZIP:
+This repository contains source code and documentation. On your Apple silicon Mac, install Node 24 or later, then run:
 
-1. Extract Focus-Studio-0.2.0-mac-arm64.zip.
-2. Move Focus Studio.app to Applications and open it.
-3. Add your work with Command N, assign projects, and choose a manageable Today plan. Follow the [illustrated guide](docs/user-guide.md).
-4. Use Focus on a task to begin a session. Finish with a reflection and optionally complete the task.
+```sh
+git clone https://github.com/samidun26/sumthink.git
+cd sumthink/desktop
+npm ci
+npm run install:mac
+```
 
-The bundle produced in this Linux workspace is a preview without Developer ID signing or Apple notarization. macOS may block it. See [the Mac installation guide](docs/macos-app.md) for the supported local-build alternative and validation limits.
+If you already cloned the repo, run `git pull --ff-only` inside it before installing. The installer rebuilds and verifies the bundle, installs it to ~/Applications/Focus Studio.app, retains the previous app as a .backup directory, and requests launch. Tasks, journal, and settings are preserved. Once the app opens, you can close Terminal; no npm start is needed.
+
+Local Mac builds use an ad-hoc development signature with hardened runtime explicitly disabled. They have no Developer ID signature or notarization. See [the Mac installation guide](docs/macos-app.md) for installation details and troubleshooting.
+
+Add work with Command N, plan a manageable Today list, and use Focus on a task. Follow the [illustrated guide](docs/user-guide.md).
 
 ## Useful workflows
 
@@ -55,7 +61,7 @@ Build an Apple silicon app bundle:
 npm run package:mac
 ```
 
-Packaging on a Mac applies an ad-hoc development signature; this is not Developer ID signing or notarization. The process also creates a ZIP under desktop/release/. Developer ID distribution remains a separate release step.
+Packaging on a Mac applies an ad-hoc development signature with hardened runtime disabled for local use; this is not Developer ID signing or notarization. The process also creates a ZIP under desktop/release/. Developer ID distribution remains a separate release step.
 
 ## Verify
 

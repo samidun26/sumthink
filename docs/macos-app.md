@@ -1,16 +1,32 @@
 # macOS application guide
 
 Date: 2026-10-11 (Asia/Jakarta).
-Version: 0.2.0.
+Version: 0.2.1.
 Target: Apple silicon, macOS 13+.
+
+## Install or repair from the repository
+
+With Node 24+ installed, run from your existing desktop/ directory:
+
+```sh
+git pull --ff-only
+npm ci
+npm run install:mac
+```
+
+The installer builds version 0.2.1, checks the framework links and code signature, copies a fresh bundle into ~/Applications/Focus Studio.app, retains the previous app as a .backup directory, and requests launch. It does not delete tasks, journal, preferences, or studio recovery files. The temporary copied app is verified before replacing the installation. If the replacement rename fails, the installer restores the previous app.
+
+The installer targets your personal Applications folder. A separate copy in /Applications is not replaced; use the path printed by the installer when checking the repaired version.
+
+Local ad-hoc signing explicitly disables hardened runtime. This avoids Developer ID Team ID library validation, which can reject the Electron framework before the JavaScript app starts. Developer ID distribution must use its own signing and notarization configuration.
 
 ## App bundle
 
-Packaging generates desktop/release/Focus-Studio-0.2.0-mac-arm64.zip; generated archives are excluded from this repository. It contains Focus Studio.app. If you have the archive, extract it, move the app to Applications, and open it through Finder. Once installed, the app works independently of Terminal, a browser, and Codex.
+Packaging generates desktop/release/Focus-Studio-0.2.1-mac-arm64.zip; generated archives are excluded from this repository. It contains Focus Studio.app. If you have the archive, extract it, move the app to Applications, and open it through Finder. Once installed, the app works independently of Terminal, a browser, and Codex.
 
 This cloud-built preview is not Developer ID signed or notarized. Gatekeeper may block launch. Use macOS's app-specific Open Anyway option only if it is offered and you trust this build. Do not disable Gatekeeper globally.
 
-If the downloaded preview cannot launch, use the source on your Mac: install Node 24+, run npm ci and npm start in desktop/, or run npm run package:mac to produce a local ad-hoc-signed build. macOS packaging/signing has not been run in this Linux environment. Developer ID signing and notarization need a Mac and the app owner's Apple developer credentials.
+If the downloaded preview cannot launch, use the source on your Mac: install Node 24+, run npm ci and npm start in desktop/, or run npm run package:mac to produce a local ad-hoc-signed build. macOS packaging/signing cannot be run in this Linux environment; successful Mac launch of the 0.2.1 correction still needs device confirmation. Developer ID signing and notarization need a Mac and the app owner's Apple developer credentials.
 
 See the [illustrated walkthrough](user-guide.md) and [screenshot gallery](preview.md) for examples of the interface.
 
@@ -71,3 +87,17 @@ A 10 MB backup limit protects the local I/O boundary. There is no automatic web 
 The actual Electron UI was tested on Linux with a graphical virtual display. The macOS bundle was cross-built and structurally inspected for the arm64 binary, bundle identity, app version, icon, local app archive, and included docs.
 
 A real Mac is still needed to check Finder launch, Gatekeeper/signing, menu-bar template rendering, Dock badge, notifications, sleep/wake, traffic-light controls, and VoiceOver. The ZIP is a preview artifact, not a notarized distribution release.
+
+## Launch crash troubleshooting
+
+If version 0.2.0 quits at launch with “mapping process and mapped file (non-platform) have different Team IDs,” update and use install:mac above. The framework exists but macOS rejects its signature under the inherited hardened-runtime setting. Reinstalling the same 0.2.0 build does not correct that configuration.
+
+Version 0.2.1 sets hardenedRuntime: false for local ad-hoc signing and checks for the incompatible runtime flag before declaring packaging successful. It also checks that the app executable, bundled framework, app archive, and Info.plist are present, and runs codesign --verify --deep --strict on macOS.
+
+If launch still fails, keep the exact error or crash-report “Reason: tried:” section and run the installed executable once from Terminal to collect any startup messages:
+
+```sh
+"$HOME/Applications/Focus Studio.app/Contents/MacOS/Focus Studio" --enable-logging=stderr
+```
+
+Terminal is only needed for this diagnostic run. Normal use opens the installed app from Finder.

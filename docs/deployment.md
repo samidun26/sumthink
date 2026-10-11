@@ -6,9 +6,9 @@ Source code, tests, assets, and development documentation are maintained at http
 
 1. On an Apple silicon Mac running macOS 13+, install Node 24 or later.
 2. In desktop/, run npm ci, npm test, and npm run test:desktop.
-3. Run npm run package:mac to create the app under desktop/build/ and a ZIP under desktop/release/.
+3. Run npm run package:mac to create and verify the app under desktop/build/ and a ZIP under desktop/release/. Use npm run install:mac to build and install a verified local copy into ~/Applications.
 4. Test launch, local persistence, import/export, menus, the menu-bar timer, Dock badge, notifications, sleep/wake, and accessibility on macOS.
-5. For public distribution, complete Developer ID signing and notarization on a Mac. The current local packaging script applies an ad-hoc development signature when run on macOS; it does not provide Developer ID signing or notarization.
+5. For public distribution, complete Developer ID signing and notarization on a Mac. The current local packaging script applies an ad-hoc development signature with hardened runtime disabled when run on macOS; it does not provide Developer ID signing or notarization.
 
 See [the macOS guide](macos-app.md) for setup and current preview limitations, and [validation](validation.md) for completed checks.
 

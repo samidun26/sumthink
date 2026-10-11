@@ -1,6 +1,6 @@
 # Product brief
 
-Current product: Focus Studio for macOS, version 0.2.0.
+Current product: Focus Studio for macOS, version 0.2.1.
 
 ## Confirmed owner context
 

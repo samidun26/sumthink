@@ -1,5 +1,13 @@
 # Validation
 
+## Local Mac packaging correction — version 0.2.1
+
+An Apple silicon device crash report confirmed dyld rejected the existing Electron framework because “mapping process and mapped file (non-platform) have different Team IDs.” Local ad-hoc signing inherited the signing library’s hardened-runtime default. The corrected configuration explicitly disables hardened runtime for local ad-hoc builds; it does not alter system-wide macOS settings or the renderer sandbox.
+
+Twelve model/storage/bundle checks passed on Linux: the original nine checks plus signature-output cases, valid/broken framework links, and rejection of bundle links to external code. The new bundle checker also passed against the previously generated real macOS bundle’s structure. Linux cross-packaging of 0.2.1 completed with the new checks; its ZIP integrity, framework symlink, and bundle version were verified. Cross-packaging does not validate the native signing correction. On macOS, packaging and installation additionally require deep/strict codesign verification and confirm the local main signature has no hardened-runtime flag.
+
+The installer stages and verifies the new app before replacing the personal Applications copy, retains the previous app, and leaves user data untouched. Native codesign execution, install replacement, and successful launch of 0.2.1 still need confirmation on a Mac; the user-provided 0.2.0 crash is device evidence of the problem, not validation of the fix.
+
 ## Visual documentation — 11 October 2026
 
 `DISPLAY=:99 npm run capture:previews` ran the real Electron app on Linux/Xvfb and captured eight UI states with sample tasks and ideas: Today, task editor, linked focus, immersive view, reflection, idea inbox, journal, and preferences. No JavaScript errors were reported. The isolated temporary profile was removed after capture. Images are documentation examples, not user data or evidence of macOS system behavior. The short saved session records actual elapsed demo time.

@@ -1,5 +1,11 @@
 # Development log
 
+## 11 October 2026 — Local Mac signing correction (0.2.1)
+
+A device crash report from an Apple silicon Mac identified a dyld Team ID rejection of the bundled Electron framework at process launch. The framework was present: the ad-hoc packaging configuration inherited the signing library’s hardenedRuntime: true default. Changed local per-file signing to explicitly disable hardened runtime; Developer ID distribution remains a separate workflow.
+
+Added bundle/signature checks before ZIP creation and an install:mac command that rebuilds, verifies, stages a fresh copy, retains the previous app, and preserves user data. Version 0.2.1 identifies the corrected build. No raw device identifiers or personal crash report are committed. Native macOS rebuild and successful launch still need device confirmation.
+
 ## 11 October 2026 — Visual documentation
 
 Added the existing app logo and interface previews to the README, a screenshot gallery, and an illustrated usage guide covering task capture, daily planning, focus, immersive view, reflection, ideas, and backups. Added a repeatable Electron capture command with a temporary sample profile. Eight desktop UI captures were produced on Linux/Xvfb without JavaScript errors; the capture profile was removed afterward. These images do not establish macOS-specific runtime behavior.
