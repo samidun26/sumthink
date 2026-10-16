@@ -8,15 +8,41 @@ A standalone, offline desktop workspace for a busy day: tasks, projects, priorit
 
 Version 0.3.0 targets Apple silicon (M-series) Macs running macOS 13 or newer. The desktop app uses Electron with native macOS menus, Dock integration, a menu-bar timer, file dialogs, and completion notifications. It bundles its interface locally.
 
-## Preview
+## Screenshots
 
-![Today view with project tasks, priorities, subtasks, and daily workload](docs/screenshots/today.png)
+### Plan your day
+
+Capture tasks, organize projects, set deadlines, and choose what deserves your attention.
+
+![Today view with sample tasks, priorities, subtasks, and daily workload](docs/screenshots/today.png)
+
+### Focus, then reflect
 
 | Focus on one task | Step into immersive view |
 | --- | --- |
-| ![Linked task and focus timer](docs/screenshots/focus-session.png) | ![Full-window immersive landscape and focus timer](docs/screenshots/immersive.png) |
+| ![Task-linked focus session and next-step notes](docs/screenshots/focus-session.png) | ![Immersive landscape and focus countdown](docs/screenshots/immersive.png) |
 
-These are actual desktop UI captures with sample work, taken in Electron on Linux. Mac system controls still need device validation. See the [full screenshot gallery](docs/preview.md) and [illustrated how-to guide](docs/user-guide.md).
+| Make tasks concrete | Save a useful reflection |
+| --- | --- |
+| ![Task editor with project, priority, dates, recurrence, and subtasks](docs/screenshots/task-editor.png) | ![Session reflection with next step and optional task completion](docs/screenshots/reflection.png) |
+
+### Review progress and catch ideas
+
+| Session journal and seven-day review | Idea inbox |
+| --- | --- |
+| ![Journal with actual saved demo time and seven-day progress](docs/screenshots/journal.png) | ![Idea inbox with sample thoughts and task-conversion controls](docs/screenshots/idea-inbox.png) |
+
+### Keep your plan beside your work
+
+The floating companion shares Today tasks, quick capture, focus controls, and weekly totals with the main app.
+
+<p align="center">
+  <img src="docs/screenshots/floating-widgets.png" width="370" alt="Floating companion with sample Today tasks, a live focus countdown, and weekly totals">
+</p>
+
+These are actual Electron UI captures with sample work, taken on Linux. They show the app and its floating window; native WidgetKit screenshots and Mac system controls still need device validation. The journal records actual elapsed demo time.
+
+[Full screenshot gallery](docs/preview.md) · [Illustrated how-to guide](docs/user-guide.md) · [Mac widget setup](docs/widgets.md)
 
 ## Get started
 
